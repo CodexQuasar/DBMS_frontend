@@ -17,10 +17,10 @@ export default function ConfigPanel({ onClose }) {
     return (
         <div className="config-panel fade-in">
             <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 18px', borderBottom: '1px solid var(--border)', background: 'var(--surf2)' }}>
-                <span style={{ fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13 }}>⚙ API Configuration</span>
+                <span style={{ fontFamily: 'var(--head)', fontWeight: 600, fontSize: 13 }}>API Configuration</span>
                 <span style={{ color: 'var(--text3)', fontSize: 11, flex: 1 }}>Connect to your model backend</span>
-                {saved && <span style={{ color: 'var(--accent3)', fontSize: 12 }}>✓ Saved</span>}
-                <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}>×</button>
+                {saved && <span style={{ color: 'var(--accent3)', fontSize: 12 }}>Saved</span>}
+                <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text3)', cursor: 'pointer', fontSize: 16, lineHeight: 1 }}>&#xd7;</button>
             </div>
             <div className="config-body">
                 <div className="config-field">

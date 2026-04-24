@@ -14,9 +14,7 @@ export default function DecoderSim({ steps }) {
 
     // Reset when new steps arrive
     useEffect(() => {
-        stop();
-        setVisible([]);
-        setIdx(0);
+        if (timerRef.current) clearInterval(timerRef.current);
     }, [steps]);
 
     function stop() {
@@ -67,10 +65,10 @@ export default function DecoderSim({ steps }) {
                 <span className="viz-title">Decoder Step-by-Step Simulation</span>
                 <div className="decoder-controls" style={{ margin: 0, marginLeft: 'auto' }}>
                     <button className={`ctrl-btn primary`} onClick={play} disabled={!steps?.length}>
-                        {playing ? '⏸ Pause' : '▶ Play'}
+                        {playing ? 'Pause' : 'Play'}
                     </button>
-                    <button className="ctrl-btn" onClick={reset} disabled={!steps?.length}>↺ Reset</button>
-                    <button className="ctrl-btn" onClick={step} disabled={!steps?.length || idx >= (steps?.length || 0)}>⏭ Step</button>
+                    <button className="ctrl-btn" onClick={reset} disabled={!steps?.length}>Reset</button>
+                    <button className="ctrl-btn" onClick={step} disabled={!steps?.length || idx >= (steps?.length || 0)}>Step</button>
                     <div className="speed-row">
                         Speed
                         <input type="range" min="1" max="5" value={speed} onChange={e => changeSpeed(e.target.value)} />
@@ -98,7 +96,7 @@ export default function DecoderSim({ steps }) {
                             ))}
                             {visible.length === 0 && steps.length > 0 && (
                                 <div style={{ color: 'var(--text3)', fontSize: 13, textAlign: 'center', padding: '40px 0' }}>
-                                    Press ▶ Play or ⏭ Step to begin
+                                    Press Play or Step to begin
                                 </div>
                             )}
                         </div>
