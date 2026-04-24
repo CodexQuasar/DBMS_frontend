@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import SchemaGraph from './components/SchemaGraph.jsx';
 import AttentionMap from './components/AttentionMap.jsx';
 import DecoderSim from './components/DecoderSim.jsx';
+import DecoderGif from './components/DecoderGif.jsx';
 import ConfigPanel from './components/ConfigPanel.jsx';
 import { SCHEMAS, EXAMPLES } from './data.js';
 import { callRatSQL, callAI } from './api.js';
@@ -106,10 +107,10 @@ export default function App() {
   /* ── Match badge ── */
   const matchBadge = result
     ? result.match === 'exact'
-      ? <span className="match-badge match-ok">✓ Exact Match</span>
+      ? <span className="match-badge match-ok">Exact Match</span>
       : result.match === 'equivalent'
-        ? <span className="match-badge match-diff">≈ Semantically Equivalent</span>
-        : <span className="match-badge" style={{ color: 'var(--text3)' }}>◌ Unknown</span>
+        ? <span className="match-badge match-diff">Semantically Equivalent</span>
+        : <span className="match-badge" style={{ color: 'var(--text3)' }}>Unknown</span>
     : null;
 
   return (
@@ -121,10 +122,13 @@ export default function App() {
           <div className="logo-text">RAT<span>-SQL</span></div>
         </div>
         <div className="header-right">
-          <span className="badge badge-blue"><span className="dot" />ACL 2020</span>
-          <span className="badge badge-green"><span className="dot" />Spider Benchmark</span>
-          <span className="badge badge-purple">Relation-Aware</span>
-          <button className="settings-btn" onClick={() => setShowConfig(s => !s)}>⚙ API Config</button>
+          <button className="settings-btn" onClick={() => setShowConfig(s => !s)}>
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
+              <circle cx="6.5" cy="6.5" r="2" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M6.5 1v1.2M6.5 10.8V12M1 6.5h1.2M10.8 6.5H12M2.7 2.7l.85.85M9.45 9.45l.85.85M9.45 3.55l-.85.85M3.55 9.45l-.85.85" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            API Config
+          </button>
         </div>
       </header>
 
@@ -216,7 +220,7 @@ export default function App() {
                   : result?.ratsql
                     ? <>
                       <button className="copy-btn" onClick={() => copySql('ratsql')}>
-                        {copied === 'ratsql' ? '✓ Copied' : 'Copy'}
+                        {copied === 'ratsql' ? 'Copied' : 'Copy'}
                       </button>
                       <span dangerouslySetInnerHTML={{ __html: highlight(result.ratsql) }} />
                     </>
@@ -250,7 +254,7 @@ export default function App() {
                   : result?.ai
                     ? <>
                       <button className="copy-btn" onClick={() => copySql('ai')}>
-                        {copied === 'ai' ? '✓ Copied' : 'Copy'}
+                        {copied === 'ai' ? 'Copied' : 'Copy'}
                       </button>
                       <span dangerouslySetInnerHTML={{ __html: highlight(result.ai) }} />
                     </>
@@ -273,7 +277,8 @@ export default function App() {
           <div className="viz-grid">
             <SchemaGraph schema={schema} />
             <AttentionMap example={result ? { query, db, ratsql: result.ratsql } : null} schema={schema} />
-            <DecoderSim steps={result?.steps} />
+            <DecoderGif />
+            <DecoderSim key={result?.ratsql ?? ''} steps={result?.steps} />
           </div>
         </div>
 
