@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import SchemaGraph from './components/SchemaGraph.jsx';
 import AttentionMap from './components/AttentionMap.jsx';
-import TraversalSim from './components/TraversalSim.jsx';
 import DecoderGif from './components/DecoderGif.jsx';
 import ConfigPanel from './components/ConfigPanel.jsx';
 import { SCHEMAS, EXAMPLES } from './data.js';
@@ -125,10 +124,6 @@ export default function App() {
         </div>
         <div className="header-right">
           <button className="settings-btn" onClick={() => setShowConfig(s => !s)}>
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true">
-              <circle cx="6.5" cy="6.5" r="2" stroke="currentColor" strokeWidth="1.2"/>
-              <path d="M6.5 1v1.2M6.5 10.8V12M1 6.5h1.2M10.8 6.5H12M2.7 2.7l.85.85M9.45 9.45l.85.85M9.45 3.55l-.85.85M3.55 9.45l-.85.85" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
-            </svg>
             API Config
           </button>
         </div>
@@ -144,12 +139,6 @@ export default function App() {
           <div className="section-label">Natural Language Query</div>
           <div className="query-panel">
             <div className="query-toolbar">
-              {/* DB icon */}
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style={{ color: 'var(--accent)', flexShrink: 0 }}>
-                <ellipse cx="8" cy="4" rx="6" ry="2.5" stroke="currentColor" strokeWidth="1.2" />
-                <path d="M2 4v4c0 1.38 2.69 2.5 6 2.5S14 9.38 14 8V4" stroke="currentColor" strokeWidth="1.2" />
-                <path d="M2 8v4c0 1.38 2.69 2.5 6 2.5S14 13.38 14 12V8" stroke="currentColor" strokeWidth="1.2" />
-              </svg>
               <div className="db-selector">
                 <select value={db} onChange={e => setDb(e.target.value)}>
                   {Object.keys(SCHEMAS).map(k => <option key={k} value={k}>{k}</option>)}
@@ -175,12 +164,7 @@ export default function App() {
               <button className="run-btn" onClick={runQuery} disabled={loading || !query.trim()}>
                 {loading
                   ? <><div className="spinner" /><span>Generating…</span></>
-                  : <>
-                    <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-                      <polygon points="3,2 11,6.5 3,11" fill="white" />
-                    </svg>
-                    <span>Generate SQL</span>
-                  </>
+                  : <span>Generate SQL</span>
                 }
               </button>
               <button className="clear-btn" onClick={clearAll}>Clear</button>
@@ -213,11 +197,6 @@ export default function App() {
           {schemaOpen && (
             <div className="schema-panel fade-in">
               <div className="schema-toolbar">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ color: 'var(--accent)', flexShrink: 0 }} aria-hidden="true">
-                  <rect x="1" y="1" width="12" height="3" rx="1" stroke="currentColor" strokeWidth="1.2" />
-                  <rect x="1" y="6" width="12" height="3" rx="1" stroke="currentColor" strokeWidth="1.2" />
-                  <rect x="1" y="11" width="7" height="2" rx="1" stroke="currentColor" strokeWidth="1.2" />
-                </svg>
                 <span className="schema-toolbar-label">Custom schema — paste DDL or JSON</span>
                 {schemaText && (
                   <button className="schema-clear" onClick={() => setSchemaText('')}>Clear</button>
@@ -250,14 +229,6 @@ export default function App() {
             {/* RAT-SQL */}
             <div className={`result-card${result?.match === 'exact' ? ' match-exact' : ''}`}>
               <div className="result-header">
-                <div className="result-icon icon-ratsql">
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                    <rect x="1" y="1" width="5.5" height="5.5" rx="1.5" fill="#4f8ef7" />
-                    <rect x="8.5" y="1" width="5.5" height="5.5" rx="1.5" fill="#4f8ef7" opacity=".6" />
-                    <rect x="1" y="8.5" width="5.5" height="5.5" rx="1.5" fill="#4f8ef7" opacity=".6" />
-                    <rect x="8.5" y="8.5" width="5.5" height="5.5" rx="1.5" fill="#4f8ef7" opacity=".4" />
-                  </svg>
-                </div>
                 <div className="result-title">RAT-SQL Output</div>
                 <div className="result-meta">Relation-Aware Encoder</div>
               </div>
@@ -286,12 +257,6 @@ export default function App() {
             {/* AI Reference */}
             <div className={`result-card${result?.match === 'exact' ? ' match-exact' : ''}`}>
               <div className="result-header">
-                <div className="result-icon icon-ai">
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                    <circle cx="7.5" cy="7.5" r="6" stroke="#7c5cfc" strokeWidth="1.2" />
-                    <path d="M5 7.5h5M7.5 5v5" stroke="#7c5cfc" strokeWidth="1.4" strokeLinecap="round" />
-                  </svg>
-                </div>
                 <div className="result-title">AI Reference Output</div>
                 <div className="result-meta">Ground Truth / LLM</div>
               </div>
@@ -324,9 +289,6 @@ export default function App() {
             <div className="section-label">Answer</div>
             <div className="output-card">
               <div className="output-header">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-                  <path d="M2 4h10M2 7h7M2 10h5" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" />
-                </svg>
                 <span className="output-title">Query Output</span>
                 <span className="output-meta">for: <em>{query}</em></span>
               </div>
@@ -368,12 +330,6 @@ export default function App() {
             <AttentionMap example={result ? { query, db, ratsql: result.ratsql } : null} schema={schema} />
             <DecoderGif />
           </div>
-        </div>
-
-        {/* ── Tree Traversal Simulation ── */}
-        <div>
-          <div className="section-label">Tree Traversal Simulation</div>
-          <TraversalSim />
         </div>
 
       </main>
