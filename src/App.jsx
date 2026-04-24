@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 import SchemaGraph from './components/SchemaGraph.jsx';
 import AttentionMap from './components/AttentionMap.jsx';
-import DecoderSim from './components/DecoderSim.jsx';
+import TraversalSim from './components/TraversalSim.jsx';
 import DecoderGif from './components/DecoderGif.jsx';
 import ConfigPanel from './components/ConfigPanel.jsx';
 import { SCHEMAS, EXAMPLES } from './data.js';
@@ -29,6 +29,8 @@ export default function App() {
   const [showConfig, setShowConfig] = useState(false);
   const [result, setResult] = useState(null); // { ratsql, ai, match, beam, links, steps, error }
   const [copied, setCopied] = useState('');
+  const [schemaText, setSchemaText] = useState('');
+  const [schemaOpen, setSchemaOpen] = useState(false);
 
   const schema = SCHEMAS[db];
 
@@ -196,6 +198,51 @@ export default function App() {
           </div>
         </div>
 
+        {/* ── Schema Input ── */}
+        <div>
+          <div className="section-label" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span>Database Schema</span>
+            <button
+              className="schema-toggle"
+              aria-expanded={schemaOpen}
+              onClick={() => setSchemaOpen(o => !o)}
+            >
+              {schemaOpen ? 'Hide' : 'Show'}
+            </button>
+          </div>
+          {schemaOpen && (
+            <div className="schema-panel fade-in">
+              <div className="schema-toolbar">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style={{ color: 'var(--accent)', flexShrink: 0 }} aria-hidden="true">
+                  <rect x="1" y="1" width="12" height="3" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                  <rect x="1" y="6" width="12" height="3" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                  <rect x="1" y="11" width="7" height="2" rx="1" stroke="currentColor" strokeWidth="1.2" />
+                </svg>
+                <span className="schema-toolbar-label">Custom schema — paste DDL or JSON</span>
+                {schemaText && (
+                  <button className="schema-clear" onClick={() => setSchemaText('')}>Clear</button>
+                )}
+              </div>
+              <textarea
+                className="schema-textarea"
+                value={schemaText}
+                onChange={e => setSchemaText(e.target.value)}
+                rows={6}
+                placeholder={
+                  'Paste your schema here. Accepted formats:\n\n' +
+                  'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(100), email VARCHAR(200));\n' +
+                  'CREATE TABLE orders (order_id INT, user_id INT REFERENCES users(id), total DECIMAL);'
+                }
+                spellCheck={false}
+              />
+              <div className="schema-hint">
+                Schema is stored in app state and can be referenced alongside the natural-language query.
+                Supported: SQL DDL statements, plain table/column lists, or JSON.
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* ── SQL Output ── */}
         <div>
           <div className="section-label">Generated SQL — Comparison</div>
@@ -271,6 +318,48 @@ export default function App() {
           </div>
         </div>
 
+        {/* ── Query Answer / Output ── */}
+        {result && (
+          <div className="fade-in">
+            <div className="section-label">Answer</div>
+            <div className="output-card">
+              <div className="output-header">
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M2 4h10M2 7h7M2 10h5" stroke="var(--accent)" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+                <span className="output-title">Query Output</span>
+                <span className="output-meta">for: <em>{query}</em></span>
+              </div>
+              <div className="output-body">
+                {result.error ? (
+                  <div className="output-error">{result.error}</div>
+                ) : (
+                  <>
+                    <div className="output-sql-row">
+                      <span className="output-label">Generated SQL</span>
+                      <code className="output-sql" dangerouslySetInnerHTML={{ __html: highlight(result.ratsql) }} />
+                    </div>
+                    <div className="output-stats">
+                      <div className="output-stat">
+                        <span className="stat-key">Match</span>
+                        <span className="stat-val">{matchBadge}</span>
+                      </div>
+                      <div className="output-stat">
+                        <span className="stat-key">Beam Score</span>
+                        <span className="stat-val" style={{ fontFamily: 'var(--mono)', color: 'var(--accent)' }}>{result.beam !== '—' ? result.beam : 'N/A'}</span>
+                      </div>
+                      <div className="output-stat">
+                        <span className="stat-key">Schema Links</span>
+                        <span className="stat-val" style={{ fontFamily: 'var(--mono)', color: 'var(--accent)' }}>{result.links}</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* ── Visualizations ── */}
         <div>
           <div className="section-label">Analysis &amp; Visualizations</div>
@@ -278,8 +367,13 @@ export default function App() {
             <SchemaGraph schema={schema} />
             <AttentionMap example={result ? { query, db, ratsql: result.ratsql } : null} schema={schema} />
             <DecoderGif />
-            <DecoderSim key={result?.ratsql ?? ''} steps={result?.steps} />
           </div>
+        </div>
+
+        {/* ── Tree Traversal Simulation ── */}
+        <div>
+          <div className="section-label">Tree Traversal Simulation</div>
+          <TraversalSim />
         </div>
 
       </main>
